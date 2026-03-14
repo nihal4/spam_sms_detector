@@ -1,3 +1,5 @@
+![SMS Spam Detector](screenshot.png)
+
 # 🛡️ Bangla SMS Spam Detector
 
 A machine learning web app that classifies Bangla SMS messages as **Spam**, **Promotional**, or **Normal** in real time.
@@ -11,7 +13,6 @@ Built with FastAPI + LinearSVC trained on the BangalaBarta Bangla Smishing datas
 👉 [sms-spam-detector.onrender.com](https://sms-spam-detector.onrender.com)
 
 > Note: Free tier may take ~30 seconds to wake up on first visit.
-
 ---
 
 ## 📸 Screenshot
