@@ -1,3 +1,5 @@
+![SMS Spam Detector](screenshot.png)
+
 # 🛡️ Bangla SMS Spam Detector
 
 A machine learning web app that classifies Bangla SMS messages as **Spam**, **Promotional**, or **Normal** in real time.
@@ -11,7 +13,6 @@ Built with FastAPI + LinearSVC trained on the BangalaBarta Bangla Smishing datas
 👉 [sms-spam-detector.onrender.com](https://sms-spam-detector.onrender.com)
 
 > Note: Free tier may take ~30 seconds to wake up on first visit.
-
 ---
 
 ## 📸 Screenshot
@@ -110,9 +111,31 @@ Returns model status.
 
 ---
 
+## 📈 Model Performance
+
+**Test Accuracy: 98.2%** (evaluated on 20% holdout set)
+
+| Class | Precision | Recall | F1-Score | Support |
+|-------|-----------|--------|----------|---------|
+| Normal | 0.98 | 0.97 | 0.98 | 185 |
+| Promo | 0.99 | 0.99 | 0.99 | 185 |
+| Smish | 0.97 | 0.98 | 0.98 | 185 |
+| **Weighted Avg** | **0.98** | **0.98** | **0.98** | **555** |
+
+**Training details:**
+- Algorithm: LinearSVC
+- Vectorizer: TF-IDF (unigram + bigram, max 5000 features)
+- Split: 80% train / 20% test (stratified)
+- Cross-validation: 5-fold CV
+
+---
+
 ## 📊 Dataset
 
 Trained on the **BangalaBarta Bangla Spam SMS / Smishing** dataset containing labeled Bangla SMS messages across spam, promotional, and normal categories.
+
+**Citation:**
+> Shahriyar, Md Farhan; Tanbhir, Gazi (2025), "Bangalabarta : A Spam / Smishing SMS Dataset Bangla", Mendeley Data, V2, doi: [10.17632/jfkfbw3gzh.2](https://doi.org/10.17632/jfkfbw3gzh.2)
 
 ---
 
