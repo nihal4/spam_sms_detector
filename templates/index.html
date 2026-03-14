@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bangla SMS Spam Detector</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131a;
+      --border: #22222e;
+      --accent: #6c63ff;
+      --accent2: #ff6584;
+      --text: #f0f0f8;
+      --muted: #6b6b80;
+      --red: #ff4d4d;
+      --orange: #ff9f43;
+      --green: #2ecc71;
+      --gray: #888;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px 80px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(108,99,255,.15);
+      border: 1px solid rgba(108,99,255,.35);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #fff 30%, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 300;
+    }
+
+    /* ── CARD ── */
+    .card {
+      width: 100%;
+      max-width: 680px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(108,99,255,.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      padding: 16px;
+      resize: vertical;
+      min-height: 130px;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    textarea::placeholder { color: var(--muted); }
+    textarea:focus { border-color: var(--accent); }
+
+    .btn {
+      margin-top: 16px;
+      width: 100%;
+      padding: 16px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      cursor: pointer;
+      transition: opacity .2s, transform .1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn:hover  { opacity: .88; }
+    .btn:active { transform: scale(.98); }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+
+    /* ── SPINNER ── */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── RESULT ── */
+    .result {
+      margin-top: 28px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      animation: fadeUp .35s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 20px 22px;
+    }
+
+    .result-icon {
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .result-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+
+    .result-note {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .result-body {
+      border-top: 1px solid var(--border);
+      padding: 16px 22px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .result-body strong { color: var(--text); font-weight: 500; }
+
+    /* Color themes */
+    .theme-red    .result-header { background: rgba(255,77,77,.10); }
+    .theme-orange .result-header { background: rgba(255,159,67,.10); }
+    .theme-green  .result-header { background: rgba(46,204,113,.10); }
+    .theme-gray   .result-header { background: rgba(136,136,136,.10); }
+
+    .theme-red    .result-label { color: var(--red); }
+    .theme-orange .result-label { color: var(--orange); }
+    .theme-green  .result-label { color: var(--green); }
+    .theme-gray   .result-label { color: var(--gray); }
+
+    /* ── EXAMPLES ── */
+    .examples {
+      width: 100%;
+      max-width: 680px;
+      margin-top: 28px;
+    }
+
+    .examples-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .ex-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 7px 14px;
+      font-size: 13px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color .2s, color .2s;
+      white-space: nowrap;
+    }
+
+    .pill:hover { border-color: var(--accent); color: var(--text); }
+
+    /* ── FOOTER ── */
+    footer {
+      margin-top: 60px;
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .error-msg {
+      color: var(--red);
+      font-size: 13px;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="badge">AI-Powered • Bangla</div>
+  <h1>SMS Spam Detector</h1>
+  <p class="subtitle">Detect spam, promotional & normal Bangla SMS messages instantly</p>
+</header>
+
+<div class="card">
+  <label for="sms-input">Paste your SMS message</label>
+  <textarea id="sms-input" placeholder="এখানে বাংলা SMS লিখুন বা পেস্ট করুন…"></textarea>
+  <p class="error-msg" id="error-msg">⚠️ Please enter a message before analysing.</p>
+  <button class="btn" id="analyze-btn" onclick="analyze()">
+    <span id="btn-text">Analyse Message</span>
+  </button>
+
+  <div class="result" id="result" style="display:none;"></div>
+</div>
+
+<div class="examples">
+  <p class="examples-title">Try an example</p>
+  <div class="ex-pills">
+    <span class="pill" onclick="setExample(this)">আপনার বিকাশ একাউন্ট বন্ধ হতে যাচ্ছে, এখনই ক্লিক করুন</span>
+    <span class="pill" onclick="setExample(this)">আজ রাত ১২টার মধ্যে অফার শেষ! ৫০% ছাড় পাচ্ছেন</span>
+    <span class="pill" onclick="setExample(this)">আগামীকাল মিটিং আছে, সময়মতো আসবেন</span>
+    <span class="pill" onclick="setExample(this)">আপনি পুরস্কার জিতেছেন! লিংকে ক্লিক করুন</span>
+  </div>
+</div>
+
+<footer>Created by S. M. Nihal Ahmed</footer>
+
+<script>
+  function setExample(el) {
+    document.getElementById('sms-input').value = el.textContent.trim();
+    document.getElementById('error-msg').style.display = 'none';
+  }
+
+  async function analyze() {
+    const msg = document.getElementById('sms-input').value.trim();
+    const errEl = document.getElementById('error-msg');
+    const btn = document.getElementById('analyze-btn');
+    const btnText = document.getElementById('btn-text');
+    const resultEl = document.getElementById('result');
+
+    if (!msg) {
+      errEl.style.display = 'block';
+      return;
+    }
+    errEl.style.display = 'none';
+
+    // Loading state
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div><span>Analysing…</span>';
+    resultEl.style.display = 'none';
+
+    try {
+      const res = await fetch('/predict', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: msg })
+      });
+
+      if (!res.ok) throw new Error('Server error');
+      const data = await res.json();
+
+      resultEl.className = `result theme-${data.color}`;
+      resultEl.innerHTML = `
+        <div class="result-header">
+          <div class="result-icon">${data.icon}</div>
+          <div>
+            <div class="result-label">${data.label}</div>
+            <div class="result-note">${data.confidence_note}</div>
+          </div>
+        </div>
+        <div class="result-body">
+          <strong>Cleaned text used for prediction:</strong><br>
+          <span style="font-family:monospace;font-size:12px;">${escHtml(data.cleaned_message) || '—'}</span>
+        </div>`;
+      resultEl.style.display = 'block';
+
+    } catch (e) {
+      resultEl.className = 'result theme-gray';
+      resultEl.innerHTML = `
+        <div class="result-header">
+          <div class="result-icon">⚠️</div>
+          <div>
+            <div class="result-label">Error</div>
+            <div class="result-note">Could not reach the server. Is the API running?</div>
+          </div>
+        </div>`;
+      resultEl.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<span id="btn-text">Analyse Message</span>';
+    }
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // Allow Ctrl+Enter to submit
+  document.getElementById('sms-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.ctrlKey) analyze();
+  });
+</script>
+</body>
+</html>
