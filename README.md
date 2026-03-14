@@ -1,61 +1,62 @@
-![SMS Spam Detector](screenshot.png)
+<img src="screenshoot/Screenshot%202026-03-14%20at%207.58.53%E2%80%AFPM.png" width="700">
+<p>A machine learning web app that classifies Bangla SMS messages as <b>Spam</b>, <b>Promotional</b>, or <b>Normal</b> in real time. Built with FastAPI + LinearSVC trained on the BangalaBarta Bangla Smishing dataset.</p>
 
-# 🛡️ Bangla SMS Spam Detector
 
-A machine learning web app that classifies Bangla SMS messages as **Spam**, **Promotional**, or **Normal** in real time.
 
-Built with FastAPI + LinearSVC trained on the BangalaBarta Bangla Smishing dataset.
+<h2>Live Demo</h2>
 
----
+[sms-spam-detector.onrender.com](https://sms-spam-detector.onrender.com)
 
-## 🌐 Live Demo
+> Note: Uisng free tier may take ~30 seconds to wake up on first visit.
 
-👉 [sms-spam-detector.onrender.com](https://sms-spam-detector.onrender.com)
+<h2>Screenshot</h2>
 
-> Note: Free tier may take ~30 seconds to wake up on first visit.
----
+<table>
+  <tr>
+    <td align="center">
+      <img src="screenshoot/Screenshot%202026-03-14%20at%2010.03.12%E2%80%AFPM.png" width="350">
+    </td>
+    <td align="center">
+      <img src="screenshoot/Screenshot%202026-03-14%20at%2010.03.21%E2%80%AFPM.png" width="350">
+    </td>
+    <td align="center">
+      <img src="screenshoot/Screenshot%202026-03-14%20at%2010.03.29%E2%80%AFPM.png" width="350">
+    </td>
+  </tr>
+</table>
 
-## 📸 Screenshot
 
-> _(Add a screenshot of your app here)_
 
----
+<h2>How It Works</h2>
 
-## 🧠 How It Works
+<ol>
+  <li>User pastes a Bangla SMS message</li>
+  <li> Text is cleaned (URLs, numbers, punctuation removed)</li>
+  <li>TF-IDF vectorizer converts text to features</li>
+  <li>LinearSVC model predicts the class</li>
+  <li>Result is shown instantly with color-coded label</li>
+</ol>
+<table>
+  <tr>
+    <th>Label</th>
+    <th>Meaning</th>
+  </tr>
+  <tr>
+    <td>🚨 Spam</td>
+    <td>Phishing / smishing attempts</td>
+  </tr>
+  <tr>
+    <td>📢 Promotional </td>
+    <td>Marketing or offer messages</td>
+  </tr>
+  <tr>
+    <td>✅ Normal</td>
+    <td>Legitimate everyday SMS</td>
+  </tr>
+</table>
 
-1. User pastes a Bangla SMS message
-2. Text is cleaned (URLs, numbers, punctuation removed)
-3. TF-IDF vectorizer converts text to features
-4. LinearSVC model predicts the class
-5. Result is shown instantly with color-coded label
 
-| Label | Meaning |
-|-------|---------|
-| 🚨 Spam | Phishing / smishing attempts |
-| 📢 Promotional | Marketing or offer messages |
-| ✅ Normal | Legitimate everyday SMS |
-
----
-
-## 🗂️ Project Structure
-
-```
-smishing-detector/
-├── app/
-│   └── main.py                  # FastAPI backend
-├── templates/
-│   └── index.html               # Frontend UI
-├── static/                      # Static assets
-├── svm_smishing_model.pkl       # Trained LinearSVC model
-├── tfidf_vectorizer.pkl         # Fitted TF-IDF vectorizer
-├── render.yaml                  # Render deployment config
-├── requirements.txt
-└── README.md
-```
-
----
-
-## ⚙️ Run Locally
+<h2>Run Locally</h2>
 
 ```bash
 # 1. Clone the repo
@@ -75,71 +76,100 @@ python -m uvicorn app.main:app --reload
 
 Open **http://localhost:8000**
 
----
 
-## 🔌 API
 
-### `POST /predict`
+<h2>Tech Stack</h2>
+<ul>
+  <li>
+    <b>Backend:</b>FastAPI, Python
+  </li>
+  <li>
+    <b>ML Model:</b>LinearSVC (scikit-learn)
+  </li>
+    <li>
+    <b>Vectorizer:</b>TF-IDF (unigram + bigram, 5000 features)
+  </li>
+   <li>
+    <b>Frontend:</b> HTML, CSS, Vanilla JS
+  </li>
+  <li>
+    <b>Hosting:</b>Render
+  </li>
+</ul>
 
-**Request:**
-```json
-{ "message": "আপনার বিকাশ একাউন্ট বন্ধ হতে যাচ্ছে" }
-```
+<h2>Model Performance</h2>
 
-**Response:**
-```json
-{
-  "prediction": "spam",
-  "label": "Spam",
-  "icon": "🚨",
-  "confidence_note": "High-confidence spam signal detected."
-}
-```
+<h3 align="center"></h3>
 
-### `GET /health`
-Returns model status.
+<table>
+  <caption>Test Accuracy: 98.2% (evaluated on 20% holdout set)</caption>
+  <thead>
+    <tr>
+      <th>Class</th>
+      <th>Precision</th>
+      <th>Recall</th>
+      <th>F1-Score</th>
+      <th>Support</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Normal</td>
+      <td>0.98</td>
+      <td>0.97</td>
+      <td>0.98</td>
+      <td>185</td>
+    </tr>
+    <tr>
+      <td>Promo</td>
+      <td>0.99</td>
+      <td>0.99</td>
+      <td>0.99</td>
+      <td>185</td>
+    </tr>
+    <tr>
+      <td>Smish</td>
+      <td>0.97</td>
+      <td>0.98</td>
+      <td>0.98</td>
+      <td>185</td>
+    </tr>
+    <tr>
+      <td><b>Weighted Avg</b></td>
+      <td><b>0.98</b></td>
+      <td><b>0.98</b></td>
+      <td><b>0.98</b></td>
+      <td><b>555</b></td>
+    </tr>
+  </tbody>
+</table>
 
----
+<h2>Training details:</h2>
+<ul>
+  <li>Algorithm: LinearSVC</li>
+  <li>Vectorizer: TF-IDF (unigram + bigram, max 5000 features)</li>
+  <li>Train & Test Split: 80% train / 20% test (stratified)</li>
+  <li>Cross-validation: 5-fold CV</li>
+</ul>
 
-## 🏗️ Tech Stack
 
-- **Backend:** FastAPI, Python
-- **ML Model:** LinearSVC (scikit-learn)
-- **Vectorizer:** TF-IDF (unigram + bigram, 5000 features)
-- **Frontend:** HTML, CSS, Vanilla JS
-- **Hosting:** Render
+<h2>Dataset</h2>
 
----
+<p>Trained on the <b><i>BangalaBarta Bangla Spam SMS / Smishing</i></b> dataset containing labeled Bangla SMS messages across spam, promotional, and normal categories.</p>
 
-## 📈 Model Performance
 
-**Test Accuracy: 98.2%** (evaluated on 20% holdout set)
+<h4>Citation:</h4>
+<p>
+<cite>
+Shahriyar, Md Farhan; Tanbhir, Gazi (2025), 
+"<i>Bangalabarta: A Spam / Smishing SMS Dataset Bangla</i>", 
+Mendeley Data, V2, doi: 
+<a href="https://doi.org/10.17632/jfkfbw3gzh.2" target="_blank">10.17632/jfkfbw3gzh.2</a>
+</cite>
+</p>
 
-| Class | Precision | Recall | F1-Score | Support |
-|-------|-----------|--------|----------|---------|
-| Normal | 0.98 | 0.97 | 0.98 | 185 |
-| Promo | 0.99 | 0.99 | 0.99 | 185 |
-| Smish | 0.97 | 0.98 | 0.98 | 185 |
-| **Weighted Avg** | **0.98** | **0.98** | **0.98** | **555** |
 
-**Training details:**
-- Algorithm: LinearSVC
-- Vectorizer: TF-IDF (unigram + bigram, max 5000 features)
-- Split: 80% train / 20% test (stratified)
-- Cross-validation: 5-fold CV
+<h2>Author</h2>
 
----
-
-## 📊 Dataset
-
-Trained on the **BangalaBarta Bangla Spam SMS / Smishing** dataset containing labeled Bangla SMS messages across spam, promotional, and normal categories.
-
-**Citation:**
-> Shahriyar, Md Farhan; Tanbhir, Gazi (2025), "Bangalabarta : A Spam / Smishing SMS Dataset Bangla", Mendeley Data, V2, doi: [10.17632/jfkfbw3gzh.2](https://doi.org/10.17632/jfkfbw3gzh.2)
-
----
-
-## 👤 Author
-
-**Nihal Ahmed**  
-[GitHub](https://github.com/yourusername) · [LinkedIn](https://linkedin.com/in/yourusername)
+<b>S. M. Nihal Ahmed</b> <br>
+[LinkedIn](https://www.linkedin.com/in/smnahmed28/)
